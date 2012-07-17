@@ -36,6 +36,74 @@
     (selection-face . ac-yasnippet-selection-face))
   "Source for Yasnippet.")
 
+;; CEDET
+(load-file ".Kemacs/cedet/common/cedet.el")
+
+(semantic-load-enable-code-helpers)
+
+(global-semantic-tag-folding-mode 1)
+
+(require 'semantic-ia)
+(setq-mode-local c-mode semanticdb-find-default-throttle
+                 '(project unloaded system recursive))
+(setq-mode-local c++-mode semanticdb-find-default-throttle
+                 '(project unloaded system recursive))
+(require 'semantic-gcc)
+
+;; (setq semanticdb-project-roots (list (expand-file-name "/")))
+(defconst cedet-user-include-dirs
+  (list ".." "../include" "../inc" "../common" "../public"
+        "../.." "../../include" "../../inc" "../../common" "../../public"))
+(defconst cedet-win32-include-dirs
+  (list "C:/MinGW/include"
+        "C:/MinGW/include/c++/3.4.5"
+        "C:/MinGW/include/c++/3.4.5/mingw32"
+        "C:/MinGW/include/c++/3.4.5/backward"
+        "C:/MinGW/lib/gcc/mingw32/3.4.5/include"
+        "C:/Program Files/Microsoft Visual Studio/VC98/MFC/Include"))
+(require 'semantic-c nil 'noerror)
+(let ((include-dirs cedet-user-include-dirs))
+  (when (eq system-type 'windows-nt)
+    (setq include-dirs (append include-dirs cedet-win32-include-dirs)))
+  (mapc (lambda (dir)
+          (semantic-add-system-include dir 'c++-mode)
+          (semantic-add-system-include dir 'c-mode))
+        include-dirs))
+
+(defun my-semantic-hook ()
+  (imenu-add-to-menubar "TAGS"))
+(add-hook 'semantic-init-hooks 'my-semantic-hook)
+
+;; ECB
+(add-to-list 'load-path ".Kemacs/ecb")
+(require 'ecb)
+(setq ecb-auto-activate t)
+(setq ecb-tip-of-the-day nil)
+
+(defun my-ecb-active-or-deactive ()
+  (interactive)
+  (if ecb-minor-mode
+      (ecb-deactivate)
+    (ecb-activate)))
+
+(global-set-key [f10] 'my-ecb-active-or-deactive)
+
+(custom-set-variables
+  ;; custom-set-variables was added by Custom.
+  ;; If you edit it by hand, you could mess it up, so be careful.
+  ;; Your init file should contain only one such instance.
+  ;; If there is more than one, they won't work right.
+ '(ecb-layout-window-sizes nil)
+ '(ecb-options-version "2.40")
+ '(ecb-primary-secondary-mouse-buttons (quote mouse-1--mouse-2))
+ '(ecb-source-path (quote ("~/Documents/"))))
+(custom-set-faces
+  ;; custom-set-faces was added by Custom.
+  ;; If you edit it by hand, you could mess it up, so be careful.
+  ;; Your init file should contain only one such instance.
+  ;; If there is more than one, they won't work right.
+ )
+
 ;; AucTex
 (add-to-list 'load-path ".Kemacs/auctex/site-lisp/site-start.d")
 (load "auctex.el" nil t t)
@@ -57,34 +125,29 @@
             (imenu-add-menubar-index)
             (define-key LaTeX-mode-map (kbd "TAB") 'TeX-complete-symbol)))
 
-;; CEDET
-(load-file ".Kemacs/cedet/common/cedet.el")
-
-(semantic-load-enable-code-helpers)
-
-(global-semantic-tag-folding-mode 1)
-
-(require 'semantic-ia)
-(setq-mode-local c-mode semanticdb-find-default-throttle
-                 '(project unloaded system recursive))
-(setq-mode-local c++-mode semanticdb-find-default-throttle
-                 '(project unloaded system recursive))
-(require 'semantic-gcc)
-
-(defun my-semantic-hook ()
-  (imenu-add-to-menubar "TAGS"))
-(add-hook 'semantic-init-hooks 'my-semantic-hook)
 
 ;; ;; Key bindings
 (defun my-cedet-hook ()
   (local-set-key (kbd "M-/") 'semantic-ia-complete-symbol-menu)
-  (local-set-key (kbd "C-x C-j") 'semantic-ia-fast-jump))
+  (local-set-key [f11] 'semantic-ia-fast-jump)
+  (global-set-key [f12]
+                  (lambda ()
+                    (interactive)
+                    (if (ring-empty-p (oref semantic-mru-bookmark-ring ring))
+                        (error "Semantic Bookmark ring is currently empty"))
+                    (let* ((ring (oref semantic-mru-bookmark-ring ring))
+                           (alist (semantic-mrub-ring-to-assoc-list ring))
+                           (first (cdr (car alist))))
+                      (if (semantic-equivalent-tag-p (oref first tag)
+                                                     (semantic-current-tag))
+                          (setq first (cdr (car (cdr alist)))))
+                      (semantic-mrub-switch-tags first)))))
 (add-hook 'c-mode-common-hook 'my-cedet-hook)
 
-(defun my-c-mode-cedet-hook ()
-  (local-set-key "." 'semantic-complete-self-insert)
-  (local-set-key ">" 'semantic-complete-self-insert))
-(add-hook 'c-mode-common-hook 'my-c-mode-cedet-hook)
+;; (defun my-c-mode-cedet-hook ()
+;;   (local-set-key "." 'semantic-complete-self-insert)
+;;   (local-set-key ">" 'semantic-complete-self-insert))
+;; (add-hook 'c-mode-common-hook 'my-c-mode-cedet-hook)
 
 ;; for shell
 (ansi-color-for-comint-mode-on)
@@ -169,7 +232,7 @@
 (global-set-key [f9] 'undo)
 (global-set-key (kbd "C-;") 'goto-line)
 (global-set-key (kbd "C-'") 'set-mark-command)
-(global-set-key [(meta ?/)] 'hippie-expand)
+;; (global-set-key [(meta ?/)] 'hippie-expand)
 
 ;; for c/c++
 (setq c-basic-offset 4)
@@ -197,3 +260,4 @@
 ;; for color theme
 (require 'color-theme)
 (color-theme-katester)
+
