@@ -82,12 +82,6 @@
 (add-hook 'c-mode-common-hook 'ecom-make-newline-indent)
 (setq auto-mode-alist (append '(("\\.h$" . c++-mode)) auto-mode-alist))
 
-;; tabbar
-(require 'tabbar)
-(tabbar-mode 1)
-(global-set-key [(meta \9)] 'tabbar-backward)
-(global-set-key [(meta \0)] 'tabbar-forward)
-
 ;; yasnippet
 (require 'yasnippet-bundle)
 
@@ -195,6 +189,7 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(ecb-options-version "2.40")
  '(ecb-windows-width 0.2))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
@@ -212,11 +207,27 @@
   (setq scroll-margin 0))
 (add-hook 'eshell-mode-hook 'eshell-scroll-conservatively)
 
+;; tabbar
+(require 'tabbar)
+(tabbar-mode 1)
+(global-set-key [(meta \9)] 'tabbar-backward-tab)
+(global-set-key [(meta \0)] 'tabbar-forward-tab)
+(global-set-key [(meta \7)] 'tabbar-backward-group)
+(global-set-key [(meta \8)] 'tabbar-forward-group)
+
 ;; for color theme
 (require 'color-theme)
 (color-theme-initialize)
+
+;; for php
+(require 'php-mode)
 (color-theme-arjen)
 
 ;; for codec
 (setq default-buffer-file-coding-system 'gbk)
-(prefer-coding-system 'gbk)
+(prefer-coding-system 'utf-8)
+
+;; for GUI
+(tool-bar-mode 0)
+(scroll-bar-mode 0)
+(set-default-font "Dejavu Sans mono-14")

@@ -1587,26 +1587,26 @@ Returns non-nil if the new state is enabled.
   "Keymap to use in Tabbar-Mwheel mode.")
 
 ;;;###autoload
-(define-minor-mode tabbar-mwheel-mode
-  "Toggle use of the mouse wheel to navigate through tabs or groups.
-With prefix argument ARG, turn on if positive, otherwise off.
-Returns non-nil if the new state is enabled.
+;; (define-minor-mode tabbar-mwheel-mode
+;;   "Toggle use of the mouse wheel to navigate through tabs or groups.
+;; With prefix argument ARG, turn on if positive, otherwise off.
+;; Returns non-nil if the new state is enabled.
 
-\\{tabbar-mwheel-mode-map}"
-  :group 'tabbar
-  :require 'tabbar
-  :global t
-  :keymap tabbar-mwheel-mode-map
-  (when tabbar-mwheel-mode
-    (unless (and mouse-wheel-mode tabbar-mode)
-      (tabbar-mwheel-mode -1))))
+;; \\{tabbar-mwheel-mode-map}"
+;;   :group 'tabbar
+;;   :require 'tabbar
+;;   :global t
+;;   :keymap tabbar-mwheel-mode-map
+;;   (when tabbar-mwheel-mode
+;;     (unless (and mouse-wheel-mode tabbar-mode)
+;;       (tabbar-mwheel-mode -1))))
 
-(defun tabbar-mwheel-follow ()
-  "Toggle Tabbar-Mwheel following Tabbar and Mouse-Wheel modes."
-  (tabbar-mwheel-mode (if (and mouse-wheel-mode tabbar-mode) 1 -1)))
+;; (defun tabbar-mwheel-follow ()
+;;   "Toggle Tabbar-Mwheel following Tabbar and Mouse-Wheel modes."
+;;   (tabbar-mwheel-mode (if (and mouse-wheel-mode tabbar-mode) 1 -1)))
 
-(add-hook 'tabbar-mode-hook      'tabbar-mwheel-follow)
-(add-hook 'mouse-wheel-mode-hook 'tabbar-mwheel-follow)
+;; (add-hook 'tabbar-mode-hook      'tabbar-mwheel-follow)
+;; (add-hook 'mouse-wheel-mode-hook 'tabbar-mwheel-follow)
 
 ;;; Buffer tabs
 ;;
