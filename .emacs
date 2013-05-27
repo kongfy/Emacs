@@ -1,4 +1,4 @@
-;; for emacs whitout X
+;; for emacs whit X
 ;; Kemacs path
 (add-to-list 'load-path "~/.Kemacs/")
 
@@ -218,12 +218,10 @@
 (color-theme-katester)
 
 ;; for codec
-(setq default-buffer-file-coding-system 'gbk)
-(prefer-coding-system 'gbk)
-
+(setq default-buffer-file-coding-system 'utf-8)
+(prefer-coding-system 'utf-8)
 
 ;; for GUI
 (tool-bar-mode 0)
-(menu-bar-mode 0)
 (scroll-bar-mode 0)
 (set-default-font "Dejavu Sans mono-12")
